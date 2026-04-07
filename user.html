@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Калькулятор упаковок противопожарных штор</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #2D2D2D 0%, #1a1a1a 100%);
+            color: #fff;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: #3D3D3D;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .header { text-align: center; margin-bottom: 20px; }
+        .header h1 { color: #fff; font-size: 24px; }
+        
+        .tabs { display: flex; gap: 5px; margin-bottom: 20px; border-bottom: 2px solid #5a5a5a; }
+        .tab-btn {
+            padding: 12px 25px; border: none; border-radius: 8px 8px 0 0;
+            background: #4a4a4a; color: #aaa; font-size: 14px; font-weight: bold; cursor: pointer;
+            transition: all 0.3s;
+        }
+        .tab-btn:hover { background: #555; color: #fff; }
+        .tab-btn.active { background: #B33A2E; color: #fff; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        
+        .section {
+            background: #4a4a4a; padding: 20px; border-radius: 10px;
+            margin-bottom: 20px; border: 2px solid #5a5a5a;
+        }
+        .section h2 {
+            color: #fff; margin-bottom: 15px; font-size: 16px;
+            border-bottom: 2px solid #B33A2E; padding-bottom: 8px;
+        }
+        
+        .input-main-container { display: flex; gap: 20px; align-items: stretch; }
+        .input-fields { flex: none; }
+        .add-button-container { display: flex; align-items: center; padding-left: 10px; }
+        .btn-add-big {
+            padding: 20px; border: none; border-radius: 8px;
+            background: linear-gradient(135deg, #B33A2E 0%, #8B2E24 100%);
+            color: white; font-size: 14px; font-weight: bold; cursor: pointer;
+            min-height: 100px; display: flex; flex-direction: column;
+            align-items: center; justify-content: center; gap: 6px;
+            transition: all 0.3s;
+        }
+        .btn-add-big:hover { background: linear-gradient(135deg, #C75C4A 0%, #A33A2E 100%); transform: translateY(-2px); }
+        .btn-add-big .icon { font-size: 22px; }
+        .btn-add-big .text { font-size: 12px; }
+        .logo-right { flex: 1; display: flex; align-items: center; justify-content: center; }
+        .logo-right img { max-width: 180px; max-height: 80px; opacity: 0.85; }
+        
+        .input-row { display: flex; flex-wrap: wrap; gap: 12px; align-items: end; margin-bottom: 12px; }
+        .input-group { display: flex; flex-direction: column; width: 150px; }
+        .input-group.small { width: 90px; }
+        .input-group.ibp { width: 80px; }
+        .input-group label { margin-bottom: 5px; font-size: 12px; color: #e0e0e0; }
+        .input-group select, .input-group input {
+            padding: 10px; border: none; border-radius: 5px;
+            background: #E0E0E0; color: #000; font-size: 14px;
+        }
+        .input-group select:focus, .input-group input:focus { outline: 2px solid #B33A2E; }
+        .input-group select.ibp-yes { background: #c8f7c5; font-weight: bold; }
+        
+        .btn {
+            padding: 10px 20px; border: none; border-radius: 5px;
+            background: #B33A2E; color: white; font-size: 13px;
+            font-weight: bold; cursor: pointer; transition: all 0.3s;
+        }
+        .btn:hover { background: #C75C4A; transform: translateY(-2px); }
+        .btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .btn-refresh {
+            background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+            font-size: 14px; padding: 12px 30px;
+        }
+        .btn-refresh:hover { background: linear-gradient(135deg, #1fc8e3 0%, #17a2b8 100%); }
+        
+        .construction-list {
+            background: #F0F0F0; color: #000; border-radius: 5px;
+            padding: 12px; max-height: 200px; overflow-y: auto; margin-bottom: 12px;
+        }
+        .construction-item {
+            padding: 8px 10px; margin-bottom: 4px; background: #fff;
+            border-radius: 5px; cursor: pointer; border-left: 4px solid transparent;
+            transition: all 0.2s;
+        }
+        .construction-item:hover { background: #ffe0dd; border-left-color: #B33A2E; }
+        .construction-item.selected { background: #B33A2E; color: white; }
+        .construction-item .mount-info { font-size: 11px; color: #666; margin-top: 2px; }
+        .construction-item.selected .mount-info { color: #ffcccc; }
+        .construction-item .ibp-badge {
+            display: inline-block; background: #28a745; color: white;
+            padding: 1px 6px; border-radius: 3px; font-size: 10px; margin-left: 8px;
+        }
+        .button-group { display: flex; gap: 12px; flex-wrap: wrap; }
+        
+        .result-section { background: #4a4a4a; padding: 20px; border-radius: 10px; margin-top: 20px; border: 2px solid #5a5a5a; }
+        .result-section h2 { color: #fff; margin-bottom: 12px; font-size: 16px; border-bottom: 2px solid #B33A2E; padding-bottom: 8px; }
+        .result-text {
+            background: #F0F0F0; color: #000; border-radius: 5px; padding: 20px;
+            font-family: 'Consolas', monospace; font-size: 17px; line-height: 1.8;
+            min-height: 300px; max-height: 450px; overflow-y: auto; white-space: pre-wrap;
+        }
+        .action-buttons { display: flex; justify-content: center; gap: 25px; margin-top: 20px; flex-wrap: wrap; }
+        .action-buttons .btn { font-size: 15px; padding: 14px 30px; }
+        
+        .section-divider { border-top: 1px dashed #666; margin: 12px 0; padding-top: 12px; }
+        .mount-label { font-size: 12px; color: #ffc107; font-weight: bold; margin-bottom: 8px; }
+        
+        /* УЧЁТ ОТГРУЗКИ */
+        .two-columns { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .orders-container {
+            background: #F0F0F0; border-radius: 5px; padding: 10px;
+            min-height: 500px; max-height: 600px; overflow-y: auto;
+        }
+        .order-card { background: #fff; border-radius: 6px; margin-bottom: 8px; overflow: hidden; }
+        .order-header {
+            background: linear-gradient(135deg, #B33A2E 0%, #8B2E24 100%);
+            color: white; padding: 8px 12px; font-size: 13px; font-weight: bold;
+        }
+        .order-header.shipped { background: linear-gradient(135deg, #28a745 0%, #1e7e34 100%); }
+        .order-item {
+            display: flex; padding: 6px 12px; border-bottom: 1px solid #eee;
+            color: #000; font-size: 12px;
+        }
+        .order-item:last-child { border-bottom: none; }
+        .order-item-serial { width: 100px; font-weight: 600; color: #B33A2E; }
+        .order-item-desc { flex: 1; color: #333; }
+        .no-orders { text-align: center; padding: 40px; color: #999; font-style: italic; }
+        
+        .stats-row {
+            display: flex; gap: 20px; margin-top: 10px; padding: 10px;
+            background: #3a3a3a; border-radius: 6px; justify-content: center;
+        }
+        .stat-item { text-align: center; }
+        .stat-value { font-size: 20px; font-weight: bold; color: #B33A2E; }
+        .stat-value.green { color: #28a745; }
+        .stat-label { font-size: 10px; color: #aaa; }
+        
+        .update-info {
+            text-align: center; padding: 12px; color: #aaa; font-size: 12px;
+            background: #3a3a3a; border-radius: 8px; margin-bottom: 15px;
+            transition: all 0.3s;
+        }
+        
+        .refresh-section {
+            text-align: center; margin-bottom: 20px;
+        }
+        
+        @media (max-width: 1000px) { .two-columns { grid-template-columns: 1fr; } }
+        @media (max-width: 900px) {
+            .input-main-container { flex-direction: column; }
+            .tabs { flex-wrap: wrap; }
+            .tab-btn { flex: 1; text-align: center; font-size: 12px; }
+        }
+        @media (max-width: 600px) {
+            .input-row { flex-direction: column; }
+            .input-group, .input-group.small, .input-group.ibp { width: 100%; }
+            .button-group, .action-buttons { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔥 Калькулятор упаковок противопожарных штор</h1>
+        </div>
+
+        <div class="tabs">
+            <button class="tab-btn active" onclick="openTab(event, 'calculator')">📦 Расчёт мест и габаритов</button>
+            <button class="tab-btn" onclick="openTab(event, 'shipment')">📋 Учёт отгрузки</button>
+        </div>
+
+        <!-- КАЛЬКУЛЯТОР -->
+        <div id="calculator" class="tab-content active">
+            <div class="section">
+                <h2>Добавить конструкцию</h2>
+                <div class="input-main-container">
+                    <div class="input-fields">
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Полотно</label>
+                                <select id="polotno">
+                                    <option value="ШОЗ1">ШОЗ1</option>
+                                    <option value="ШОЗ2">ШОЗ2</option>
+                                    <option value="ШДЗ1">ШДЗ1</option>
+                                    <option value="ШДЗ30">ШДЗ30</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Ширина (мм)</label>
+                                <input type="number" id="width" min="1" placeholder="Ширина">
+                            </div>
+                            <div class="input-group">
+                                <label>Высота (мм)</label>
+                                <input type="number" id="height" min="1" placeholder="Высота">
+                            </div>
+                            <div class="input-group small">
+                                <label>Кол-во</label>
+                                <input type="number" id="count" min="1" value="1">
+                            </div>
+                        </div>
+                        <div class="section-divider"><div class="mount-label">⚙️ Типы монтажа:</div></div>
+                        <div class="input-row">
+                            <div class="input-group">
+                                <label>Короб</label>
+                                <select id="mountCorob">
+                                    <option value="Накл.">Накладной</option>
+                                    <option value="Встр.">Встроенный</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Левая направл.</label>
+                                <select id="mountLeft">
+                                    <option value="Накл.">Накладная</option>
+                                    <option value="Встр.">Встроенная</option>
+                                </select>
+                            </div>
+                            <div class="input-group">
+                                <label>Правая направл.</label>
+                                <select id="mountRight">
+                                    <option value="Накл.">Накладная</option>
+                                    <option value="Встр.">Встроенная</option>
+                                </select>
+                            </div>
+                            <div class="input-group ibp">
+                                <label>🔋 ИБП</label>
+                                <select id="ibp" onchange="this.classList.toggle('ibp-yes', this.value==='Да')">
+                                    <option value="Нет">Нет</option>
+                                    <option value="Да">Да</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="add-button-container">
+                        <button class="btn-add-big" onclick="addConstruction()">
+                            <span class="icon">➕</span>
+                            <span class="text">ДОБАВИТЬ</span>
+                        </button>
+                    </div>
+                    <div class="logo-right"><img src="logo.png" alt=""></div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Список конструкций</h2>
+                <div class="construction-list" id="constructionList">
+                    <div style="color:#999;text-align:center;padding:20px;">Добавьте конструкцию</div>
+                </div>
+                <div class="button-group">
+                    <button class="btn" onclick="deleteSelected()">🗑 Удалить</button>
+                    <button class="btn" onclick="clearAll()">❌ Очистить</button>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn" onclick="calculate()">🧮 Рассчитать</button>
+                <button class="btn" onclick="saveToFile()">💾 Сохранить</button>
+            </div>
+
+            <div class="result-section">
+                <h2>Результаты расчёта</h2>
+                <div class="result-text" id="resultText">Нажмите "Рассчитать"</div>
+            </div>
+        </div>
+
+        <!-- УЧЁТ ОТГРУЗКИ -->
+        <div id="shipment" class="tab-content">
+            <div class="update-info" id="updateInfo">🔄 Загрузка данных...</div>
+            
+            <!-- КНОПКА ПРИНУДИТЕЛЬНОГО ОБНОВЛЕНИЯ -->
+            <div class="refresh-section">
+                <button class="btn btn-refresh" onclick="forceRefresh()" id="refreshBtn">
+                    🔄 Обновить данные
+                </button>
+            </div>
+            
+            <div class="two-columns">
+                <div class="section">
+                    <h2>📦 Готовые к отгрузке</h2>
+                    <div class="orders-container" id="readyContainer"></div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-value" id="readyCount">0</div>
+                            <div class="stat-label">Конструкций</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value" id="readyCustomers">0</div>
+                            <div class="stat-label">Заказов</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="section">
+                    <h2>✅ Отгруженные</h2>
+                    <div class="orders-container" id="shippedContainer"></div>
+                    <div class="stats-row">
+                        <div class="stat-item">
+                            <div class="stat-value green" id="shippedCount">0</div>
+                            <div class="stat-label">Конструкций</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-value green" id="shippedCustomers">0</div>
+                            <div class="stat-label">Заказов</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===================== НАСТРОЙКИ GITHUB =====================
+        // ⚠️ ЗАМЕНИТЕ НА СВОИ ДАННЫЕ:
+        const GITHUB_USERNAME = 'iheardthatsound123-cyber';      // ← Ваш логин GitHub
+        const GITHUB_REPO = 'shipment-data';      // ← Название репозитория
+        const DATA_URL = `https://raw.githubusercontent.com/${GITHUB_USERNAME}/${GITHUB_REPO}/main/data.js`;
+
+        let DATA = null;
+
+        // ===================== ЗАГРУЗКА ДАННЫХ ИЗ GITHUB =====================
+        async function loadDataFromGitHub() {
+            try {
+                document.getElementById('updateInfo').textContent = '🔄 Загрузка данных...';
+                document.getElementById('updateInfo').style.background = '#4a4a4a';
+                
+                // Принудительно обходим кэш браузера
+                const timestamp = Date.now();
+                const response = await fetch(`${DATA_URL}?nocache=${timestamp}`, {
+                    cache: 'no-store',
+                    headers: {
+                        'Cache-Control': 'no-cache',
+                        'Pragma': 'no-cache'
+                    }
+                });
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('Файл data.js не найден. Проверьте настройки GitHub.');
+                    }
+                    throw new Error(`Ошибка сервера: ${response.status}`);
+                }
+                
+                const text = await response.text();
+                
+                // Извлекаем JSON из "const DATA = {...};"
+                const jsonMatch = text.match(/const\s+DATA\s*=\s*(\{[\s\S]*\});?\s*$/);
+                
+                if (!jsonMatch) {
+                    console.error('Полученный текст:', text.substring(0, 500));
+                    throw new Error('Неверный формат файла data.js');
+                }
+                
+                // Парсим JSON
+                try {
+                    DATA = JSON.parse(jsonMatch[1]);
+                } catch (parseError) {
+                    console.error('Ошибка парсинга JSON:', parseError);
+                    throw new Error('Ошибка в структуре данных');
+                }
+                
+                if (!DATA) throw new Error('Данные пусты');
+                
+                // Отображаем данные
+                renderOrders(DATA.ready || [], 'readyContainer', 'ready');
+                renderOrders(DATA.shipped || [], 'shippedContainer', 'shipped');
+                
+                // Статистика
+                const readyCount = (DATA.ready || []).reduce((sum, order) => sum + order.items.length, 0);
+                const shippedCount = (DATA.shipped || []).reduce((sum, order) => sum + order.items.length, 0);
+                
+                document.getElementById('readyCount').textContent = readyCount;
+                document.getElementById('readyCustomers').textContent = (DATA.ready || []).length;
+                document.getElementById('shippedCount').textContent = shippedCount;
+                document.getElementById('shippedCustomers').textContent = (DATA.shipped || []).length;
+                
+                // Время обновления
+                const updateTime = DATA.updated ? new Date(DATA.updated).toLocaleString('ru-RU') : '—';
+                const now = new Date().toLocaleTimeString('ru-RU');
+                document.getElementById('updateInfo').textContent = `📅 Данные от: ${updateTime} | ⏰ Загружено: ${now} | 🔄 Автообновление: 30 сек`;
+                document.getElementById('updateInfo').style.background = '#3a3a3a';
+                
+                return true;
+                
+            } catch (e) {
+                console.error('Ошибка загрузки:', e);
+                document.getElementById('updateInfo').textContent = '❌ ' + e.message;
+                document.getElementById('updateInfo').style.background = '#5a2a2a';
+                document.getElementById('readyContainer').innerHTML = '<div class="no-orders">❌ ' + e.message + '</div>';
+                document.getElementById('shippedContainer').innerHTML = '<div class="no-orders">❌ ' + e.message + '</div>';
+                return false;
+            }
+        }
+
+        // ===================== ПРИНУДИТЕЛЬНОЕ ОБНОВЛЕНИЕ =====================
+        function forceRefresh() {
+            const btn = document.getElementById('refreshBtn');
+            const info = document.getElementById('updateInfo');
+            
+            // Блокируем кнопку
+            btn.disabled = true;
+            btn.textContent = '⏳ Обновление...';
+            
+            // Жёлтый индикатор загрузки
+            info.style.background = '#5a5a2a';
+            info.textContent = '🔄 Загрузка данных...';
+            
+            loadDataFromGitHub().then(success => {
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.textContent = '🔄 Обновить данные';
+                    
+                    if (success) {
+                        // Зелёная вспышка успеха
+                        info.style.background = '#2a5a2a';
+                        setTimeout(() => {
+                            info.style.background = '#3a3a3a';
+                        }, 1500);
+                    }
+                }, 500);
+            });
+        }
+
+        // ===================== ОТОБРАЖЕНИЕ ЗАКАЗОВ =====================
+        function renderOrders(orders, containerId, type) {
+            const cont = document.getElementById(containerId);
+            
+            if (!orders || !orders.length) {
+                cont.innerHTML = `<div class="no-orders">Нет ${type === 'ready' ? 'готовых' : 'отгруженных'} конструкций</div>`;
+                return;
+            }
+            
+            cont.innerHTML = orders.map(o => `
+                <div class="order-card">
+                    <div class="order-header ${type === 'shipped' ? 'shipped' : ''}">
+                        🏢 ${o.customer} (${o.items.length} шт.)
+                    </div>
+                    <div class="order-items">
+                        ${o.items.map(it => `
+                            <div class="order-item">
+                                <span class="order-item-serial">${it.serial}</span>
+                                <span class="order-item-desc">${it.description}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // ===================== ВКЛАДКИ =====================
+        function openTab(e, tab) {
+            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tab).classList.add('active');
+            e.target.classList.add('active');
+            
+            if (tab === 'shipment') {
+                loadDataFromGitHub();
+            }
+        }
+
+        // Автообновление каждые 30 секунд
+        setInterval(() => {
+            if (document.getElementById('shipment').classList.contains('active')) {
+                loadDataFromGitHub();
+            }
+        }, 30000);
+
+        // ===================== КАЛЬКУЛЯТОР =====================
+        const COROBA_COEF = {
+            "160x240": [9.88, 1.64, 0.4, 0.0384],
+            "250x300": [12.65, 2.61, 0.56, 0.075],
+            "300x350": [15.99, 3.64, 0.68, 0.105],
+            "400x450": [19.68, 5.76, 0.91, 0.18]
+        };
+        const VERH_PLANKA = [2.86, 0.00295];
+        const OTTSEKAYA = [2.1, 0.0049];
+        const KRISHKA_OTTSEK = [1.05, 0.00016];
+        const NAPRAVLYAYUSCHAYA = [4.2, 0.00405];
+        const KRISHKA_NAPRAV = [1.3, 0.00013];
+        const POLOTNO_COEF = {
+            "SOZ1": [1.9, 0.01],
+            "SOZ2": [0.7, 0.0025],
+            "SDZ1": [0.7, 0.0025],
+            "SDZ30": [0.5, 0.002]
+        };
+        const POLOTNO_MAP = {"ШОЗ1": "SOZ1", "ШОЗ2": "SOZ2", "ШДЗ1": "SDZ1", "ШДЗ30": "SDZ30"};
+        const VAL_COEF = {
+            "60": [1.21, 0.0036],
+            "70": [2.1, 0.0049],
+            "89": [6.36, 0.007921],
+            "114": [9.53, 0.012996],
+            "133": [15.78, 0.017689]
+        };
+
+        let constructions = [];
+        let selectedIndex = -1;
+
+        function selectCorobTip(h) {
+            return h <= 1500 ? "160x240" : h <= 3200 ? "250x300" : h <= 6100 ? "300x350" : "400x450";
+        }
+
+        function selectValTip(w, h) {
+            if ((w > 7000 || h > 7000) && w > 4000 && h > 4000) return "133";
+            if ((w > 6000 || h > 6000) && w > 3000 && h > 3000) return "114";
+            if ((w > 4300 || h > 4300) && w > 3000 && h > 3000) return "89";
+            return w > 3000 || h > 3000 ? "70" : "60";
+        }
+
+        function calcSizes(mC, mL, mR, w, h) {
+            const n = mC === "накладной";
+            return {
+                pa: ((n ? w + 110 : w - 90) / 1000) * ((n ? h + 280 : h + 40) / 1000),
+                cw: n ? w + 188 : w - 10,
+                ow: n ? w : w - 210,
+                nl: mL === "накладной" ? h + 65 : h - 180,
+                nr: mR === "накладной" ? h + 65 : h - 180,
+                vp: n ? w + 176 : w - 20,
+                vw: n ? w + 68 : w - 130
+            };
+        }
+
+        function processConstruct(s, w, h, cnt, mat, ibp) {
+            const tK = selectCorobTip(h), tV = selectValTip(w, h);
+            let tVes = 0, tObem = 0, nUpak = 0;
+            
+            const [cv, ck, cu, co] = COROBA_COEF[tK];
+            tVes += s.cw / 1000 * cv + 2 * ck;
+            tObem += s.cw / 1000 * co;
+            nUpak++;
+            
+            tVes += s.pa * POLOTNO_COEF[mat][0];
+            tObem += s.pa * POLOTNO_COEF[mat][1];
+            nUpak++;
+            
+            tVes += s.vw / 1000 * VAL_COEF[tV][0];
+            tObem += s.vw / 1000 * VAL_COEF[tV][1];
+            nUpak++;
+            
+            tVes += (s.nl + s.nr) / 1000 * NAPRAVLYAYUSCHAYA[0] + (s.nl + s.nr) / 1000 * KRISHKA_NAPRAV[0];
+            tObem += (s.nl + s.nr) / 1000 * NAPRAVLYAYUSCHAYA[1] + (s.nl + s.nr) / 1000 * KRISHKA_NAPRAV[1];
+            nUpak += 2;
+            
+            tVes += s.vp / 1000 * VERH_PLANKA[0] + s.ow / 1000 * OTTSEKAYA[0] + s.ow / 1000 * KRISHKA_OTTSEK[0];
+            tObem += s.vp / 1000 * VERH_PLANKA[1] + s.ow / 1000 * OTTSEKAYA[1] + s.ow / 1000 * KRISHKA_OTTSEK[1];
+            nUpak++;
+            
+            let ex = 0;
+            if (s.cw > 2990) ex++;
+            if (s.nl > 4000 && s.nr > 4000) ex++;
+            
+            tVes *= cnt;
+            tObem *= cnt;
+            nUpak = (nUpak + ex) * cnt;
+            tVes += cnt * 4;
+            tObem += cnt * 0.04;
+            tVes *= 1.07;
+            
+            let ibpU = 0, ibpV = 0, ibpO = 0;
+            if (ibp) {
+                ibpU = cnt;
+                ibpV = 7 * cnt;
+                ibpO = 0.03 * cnt;
+                nUpak += ibpU;
+                tVes += ibpV;
+                tObem += ibpO;
+            }
+            
+            return {ep: ex * cnt, tv: tVes, to: tObem, nu: nUpak, iu: ibpU, iv: ibpV, io: ibpO};
+        }
+
+        function addConstruction() {
+            const w = +document.getElementById('width').value;
+            const h = +document.getElementById('height').value;
+            const c = +document.getElementById('count').value;
+            
+            if (!w || !h || !c || w <= 0 || h <= 0 || c <= 0) {
+                alert('Введите корректные числа');
+                return;
+            }
+            
+            constructions.push({
+                p: document.getElementById('polotno').value,
+                w, h, c,
+                mC: document.getElementById('mountCorob').value === "Накл." ? "накладной" : "встроенный",
+                mL: document.getElementById('mountLeft').value === "Накл." ? "накладной" : "встроенный",
+                mR: document.getElementById('mountRight').value === "Накл." ? "накладной" : "встроенный",
+                ibp: document.getElementById('ibp').value === "Да"
+            });
+            
+            updateList();
+            document.getElementById('width').value = '';
+            document.getElementById('height').value = '';
+            document.getElementById('count').value = '1';
+        }
+
+        function m(x) {
+            return x === "накладной" ? "накл." : "встр.";
+        }
+
+        function updateList() {
+            const el = document.getElementById('constructionList');
+            
+            if (!constructions.length) {
+                el.innerHTML = '<div style="color:#999;text-align:center;padding:20px;">Добавьте конструкцию</div>';
+                selectedIndex = -1;
+                return;
+            }
+            
+            el.innerHTML = constructions.map((c, i) => `
+                <div class="construction-item ${i === selectedIndex ? 'selected' : ''}" onclick="selectedIndex=${i};updateList()">
+                    <strong>${i + 1}. ${c.p}</strong> ${c.w}×${c.h} мм, ${c.c} шт.${c.ibp ? '<span class="ibp-badge">🔋</span>' : ''}
+                    <div class="mount-info">К:${m(c.mC)} Л:${m(c.mL)} П:${m(c.mR)}</div>
+                </div>
+            `).join('');
+        }
+
+        function deleteSelected() {
+            if (selectedIndex === -1) {
+                alert('Выберите конструкцию для удаления');
+                return;
+            }
+            constructions.splice(selectedIndex, 1);
+            selectedIndex = -1;
+            updateList();
+        }
+
+        function clearAll() {
+            if (constructions.length && !confirm('Очистить весь список?')) return;
+            constructions = [];
+            selectedIndex = -1;
+            updateList();
+            document.getElementById('resultText').textContent = 'Нажмите "Рассчитать"';
+        }
+
+        function calculate() {
+            if (!constructions.length) {
+                alert('Нет конструкций');
+                return;
+            }
+            
+            let gV = 0, gO = 0, gU = 0;
+            let out = '╔══════════════════════════════════════════════════════════════════════════╗\n';
+            out += '║                         РЕЗУЛЬТАТЫ РАСЧЁТА                               ║\n';
+            out += '╚══════════════════════════════════════════════════════════════════════════╝\n\n';
+            
+            constructions.forEach((c, i) => {
+                const s = calcSizes(c.mC, c.mL, c.mR, c.w, c.h);
+                const r = processConstruct(s, c.w, c.h, c.c, POLOTNO_MAP[c.p], c.ibp);
+                
+                out += `📦 ${i + 1}. ${c.p}, ${c.w}×${c.h} мм, ${c.c} шт.${c.ibp ? ' +🔋ИБП' : ''}\n`;
+                out += `   ⚙️ Монтаж: К:${m(c.mC)} Л:${m(c.mL)} П:${m(c.mR)}\n`;
+                out += `   🧾 Упаковок: ${r.nu}${r.ep || r.iu ? ` (сост:${r.ep}${r.iu ? ', ИБП:' + r.iu : ''})` : ''}\n`;
+                out += `   ⚖️ Вес: ${r.tv.toFixed(2)} кг${r.iv ? ` (вкл. ИБП: ${r.iv} кг)` : ''}\n`;
+                out += `   📐 Объём: ${r.to.toFixed(4)} м³${r.io ? ` (вкл. ИБП: ${r.io.toFixed(2)} м³)` : ''}\n\n`;
+                
+                gV += r.tv;
+                gO += r.to;
+                gU += r.nu;
+            });
+            
+            out += '╔══════════════════════════════════════════════════════════════════════════╗\n';
+            out += '║                            ОБЩИЙ ИТОГ                                    ║\n';
+            out += '╚══════════════════════════════════════════════════════════════════════════╝\n';
+            out += `📦 Всего упаковок: ${gU}\n`;
+            out += `⚖️ Общий вес: ${gV.toFixed(2)} кг\n`;
+            out += `📐 Общий объём: ${gO.toFixed(4)} м³\n`;
+            
+            document.getElementById('resultText').textContent = out;
+        }
+
+        function saveToFile() {
+            if (!constructions.length) {
+                alert('Нет данных');
+                return;
+            }
+            
+            let txt = '=== Расчёт упаковок ===\n';
+            txt += `Дата: ${new Date().toLocaleString('ru-RU')}\n\n`;
+            
+            let gV = 0, gO = 0, gU = 0;
+            
+            constructions.forEach((c, i) => {
+                const s = calcSizes(c.mC, c.mL, c.mR, c.w, c.h);
+                const r = processConstruct(s, c.w, c.h, c.c, POLOTNO_MAP[c.p], c.ibp);
+                
+                txt += `${i + 1}. ${c.p} ${c.w}×${c.h} мм, ${c.c} шт.${c.ibp ? ' +ИБП' : ''}\n`;
+                txt += `   Монтаж: К:${m(c.mC)} Л:${m(c.mL)} П:${m(c.mR)}\n`;
+                txt += `   Упаковок: ${r.nu}, Вес: ${r.tv.toFixed(2)} кг, Объём: ${r.to.toFixed(4)} м³\n\n`;
+                
+                gV += r.tv;
+                gO += r.to;
+                gU += r.nu;
+            });
+            
+            txt += `=== ИТОГО ===\n`;
+            txt += `Упаковок: ${gU}\n`;
+            txt += `Вес: ${gV.toFixed(2)} кг\n`;
+            txt += `Объём: ${gO.toFixed(4)} м³\n`;
+            
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(new Blob([txt], {type: 'text/plain;charset=utf-8'}));
+            a.download = `расчёт_${new Date().toISOString().slice(0,10)}.txt`;
+            a.click();
+        }
+
+        // Загрузка данных при старте
+        document.addEventListener('DOMContentLoaded', function() {
+            loadDataFromGitHub();
+        });
+    </script>
+</body>
+</html>
