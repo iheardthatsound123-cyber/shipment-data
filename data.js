@@ -85,9 +85,37 @@ const DATA = {
           "description": "(1100х1000 ННН__К RAL9016)"
         }
       ]
-    }
-  ],
-  "shipped": [
+    },
+    {
+      "customer": "ПРОФИНВЕСТ (638)",
+      "items": [
+        {
+          "serial": "21081634",
+          "description": "(1124х1180 ННВ__К RAL7035)"
+        },
+        {
+          "serial": "21081635",
+          "description": "(1440х1230 ННН__К RAL7035)"
+        }
+      ]
+    },
+    {
+      "customer": "ПИК-УК (522)",
+      "items": [
+        {
+          "serial": "21091613",
+          "description": "(1051х2114 ННН__К RAL9016)"
+        },
+        {
+          "serial": "21081614",
+          "description": "(1088х1183 ННН__К RAL9016)"
+        },
+        {
+          "serial": "21081615",
+          "description": "(1085х1173 ННН__К RAL9016)"
+        }
+      ]
+    },
     {
       "customer": "РЕШЕНИЯ ДЛЯ ОКОН (629)",
       "items": [
@@ -112,37 +140,8 @@ const DATA = {
           "description": "(3500х2200 ННН__К RAL7016)"
         }
       ]
-    },
-    {
-      "customer": "ПИК-УК (522)",
-      "items": [
-        {
-          "serial": "21091613",
-          "description": "(1051х2114 ННН__К RAL9016)"
-        },
-        {
-          "serial": "21081614",
-          "description": "(1088х1183 ННН__К RAL9016)"
-        },
-        {
-          "serial": "21081615",
-          "description": "(1085х1173 ННН__К RAL9016)"
-        }
-      ]
-    },
-    {
-      "customer": "ПРОФИНВЕСТ (638)",
-      "items": [
-        {
-          "serial": "21081634",
-          "description": "(1124х1180 ННВ__К RAL7035)"
-        },
-        {
-          "serial": "21081635",
-          "description": "(1440х1230 ННН__К RAL7035)"
-        }
-      ]
     }
   ],
-  "updated": "2026-04-07T16:33:23.958Z"
+  "shipped": [],
+  "updated": "2026-04-07T16:33:33.966Z"
 };
