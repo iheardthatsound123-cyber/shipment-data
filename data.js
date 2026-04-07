@@ -67,6 +67,17 @@ window.SHIPMENT_DATA = {
       ]
     },
     {
+      "customer": "М-СЕРВИС (722)",
+      "items": [
+        {
+          "serial": "21081710",
+          "description": "(1115х1000 ННН__К RAL7040)"
+        }
+      ]
+    }
+  ],
+  "shipped": [
+    {
       "customer": "РБ ЛОДЖИСТИКС (671)",
       "items": [
         {
@@ -95,17 +106,7 @@ window.SHIPMENT_DATA = {
           "description": "(650х2000 ННН__К RAL7035)"
         }
       ]
-    },
-    {
-      "customer": "М-СЕРВИС (722)",
-      "items": [
-        {
-          "serial": "21081710",
-          "description": "(1115х1000 ННН__К RAL7040)"
-        }
-      ]
     }
   ],
-  "shipped": [],
-  "updated": "2026-04-07T19:12:30.723Z"
+  "updated": "2026-04-07T19:20:13.683Z"
 };
