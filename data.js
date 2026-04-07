@@ -1,4 +1,4 @@
-const DATA = {
+window.SHIPMENT_DATA = {
   "ready": [
     {
       "customer": "АЙСПРОМТОРГ (633)",
