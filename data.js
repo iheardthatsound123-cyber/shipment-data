@@ -74,9 +74,7 @@ window.SHIPMENT_DATA = {
           "description": "(1115х1000 ННН__К RAL7040)"
         }
       ]
-    }
-  ],
-  "shipped": [
+    },
     {
       "customer": "РБ ЛОДЖИСТИКС (671)",
       "items": [
@@ -108,5 +106,6 @@ window.SHIPMENT_DATA = {
       ]
     }
   ],
-  "updated": "2026-04-07T19:21:42.954Z"
+  "shipped": [],
+  "updated": "2026-04-07T19:24:12.698Z"
 };
