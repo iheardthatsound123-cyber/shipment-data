@@ -27,15 +27,6 @@ window.SHIPMENT_DATA = {
       ]
     },
     {
-      "customer": "МЕГА-МОНТАЖ (225)",
-      "items": [
-        {
-          "serial": "31081171",
-          "description": "(1100х1000 ННН__К RAL9016)"
-        }
-      ]
-    },
-    {
       "customer": "АВ ГРУПП ООО (228)",
       "items": [
         {
@@ -61,15 +52,6 @@ window.SHIPMENT_DATA = {
       ]
     },
     {
-      "customer": "СПРИНТ (226)",
-      "items": [
-        {
-          "serial": "31091177",
-          "description": "(760х2130 ННН__К RAL7035)"
-        }
-      ]
-    },
-    {
       "customer": "АЛЬЯНС-СВ (220)",
       "items": [
         {
@@ -79,6 +61,25 @@ window.SHIPMENT_DATA = {
       ]
     }
   ],
-  "shipped": [],
-  "updated": "2026-04-08T05:09:36.410Z"
+  "shipped": [
+    {
+      "customer": "СПРИНТ (226)",
+      "items": [
+        {
+          "serial": "31091177",
+          "description": "(760х2130 ННН__К RAL7035)"
+        }
+      ]
+    },
+    {
+      "customer": "МЕГА-МОНТАЖ (225)",
+      "items": [
+        {
+          "serial": "31081171",
+          "description": "(1100х1000 ННН__К RAL9016)"
+        }
+      ]
+    }
+  ],
+  "updated": "2026-04-08T05:38:48.323Z"
 };
